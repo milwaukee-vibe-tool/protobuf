@@ -1,0 +1,6 @@
+syntax = "proto3";
+
+message NewLog {
+  string log_id = 1;
+  string sample_rate = 2;
+}

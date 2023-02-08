@@ -1,0 +1,7 @@
+syntax = "proto3";
+
+message GetLog {
+  string log_id = 1;
+  uint32 offset = 2;
+  uint32 count = 3;
+}

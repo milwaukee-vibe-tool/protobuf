@@ -1,0 +1,18 @@
+syntax = "proto3";
+
+import "protos/responses/success.proto";
+import "protos/responses/error.proto";
+import "protos/responses/logList.proto";
+import "protos/responses/logInfo.proto";
+import "protos/responses/systemInfo.proto";
+
+message Response {
+  uint32 request_id = 1;
+  oneof payload {
+    Success success = 2;
+    Error error = 3;
+    LogList log_list = 4;
+    LogInfo log_info = 5;
+    SystemInfo system_info = 6;
+  }
+}

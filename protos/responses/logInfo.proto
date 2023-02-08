@@ -1,0 +1,14 @@
+syntax = "proto3";
+
+message LogInfo {
+  string log_id = 1;
+  uint32 sample_rate = 2;
+  uint32 offset = 3;
+  uint32 count = 4;
+  repeated DataPoint points = 5;
+}
+
+message DataPoint {
+  uint32 stamp = 1;
+  uint32 value = 2;
+}

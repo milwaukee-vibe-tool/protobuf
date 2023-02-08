@@ -1,0 +1,3 @@
+syntax = "proto3";
+
+message SystemInfo { string system_id = 1; }

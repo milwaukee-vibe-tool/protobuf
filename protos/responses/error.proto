@@ -1,0 +1,11 @@
+syntax = "proto3";
+
+message Error {
+  ErrorCode code = 1;
+  string message = 2;
+}
+
+enum ErrorCode {
+  UNKNOWN = 0;
+  NOT_FOUND = 1;
+}
