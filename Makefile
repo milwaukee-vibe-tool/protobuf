@@ -1,24 +1,18 @@
-BUILD_TARGETS = protos/*.proto
-BUILD_DIR = build/$@
+PROTOS = protos/*.proto
+TARGETS = typescript
 
-LANGS = typescript
-
-.PHONY: all clean $(LANGS)
-
-all: typescript
+.PHONY: clean install install/$(TARGETS) build build/$(TARGETS)
 
 clean:
 	rm -r build
 
-install:
-	mkdir install
+install: install/$(TARGETS)
 
-install/$(LANGS): install
+install/typescript:
 	npm install ts-proto
-	@touch $@
 
-build/$(LANGS):
-	mkdir $@
+build: build/$(TARGETS)
 
-typescript: $(BUILD_DIR)
-	protoc --plugin=./node_modules/.bin/protoc-gen-ts_proto --ts_proto_out=$(BUILD_DIR) $(BUILD_TARGETS)
+build/typescript:
+	@mkdir -p $@
+	protoc --plugin=./node_modules/.bin/protoc-gen-ts_proto --ts_proto_out=$@ $(PROTOS)
