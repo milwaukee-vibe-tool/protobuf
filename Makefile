@@ -1,14 +1,15 @@
 PROTOS = protos/*.proto
 TARGETS = typescript
 
+.DEFAULT_GOAL := build
 .PHONY: clean install install/$(TARGETS) build build/$(TARGETS)
 
-clean:
+.clean:
 	rm -r build
 
-install: install/$(TARGETS)
+.install: install/$(TARGETS)
 
-install/typescript:
+.install/typescript:
 	npm install ts-proto
 
 build: build/$(TARGETS)

@@ -10,6 +10,10 @@ export const protobufPackage = "";
 
 export interface Request {
   requestId: number;
+  payload: RequestPayload | undefined;
+}
+
+export interface RequestPayload {
   listLogs?: ListLogs | undefined;
   getLog?: GetLog | undefined;
   newLog?: NewLog | undefined;
@@ -18,14 +22,7 @@ export interface Request {
 }
 
 function createBaseRequest(): Request {
-  return {
-    requestId: 0,
-    listLogs: undefined,
-    getLog: undefined,
-    newLog: undefined,
-    deleteLog: undefined,
-    formatSd: undefined,
-  };
+  return { requestId: 0, payload: undefined };
 }
 
 export const Request = {
@@ -33,20 +30,8 @@ export const Request = {
     if (message.requestId !== 0) {
       writer.uint32(8).uint32(message.requestId);
     }
-    if (message.listLogs !== undefined) {
-      ListLogs.encode(message.listLogs, writer.uint32(18).fork()).ldelim();
-    }
-    if (message.getLog !== undefined) {
-      GetLog.encode(message.getLog, writer.uint32(26).fork()).ldelim();
-    }
-    if (message.newLog !== undefined) {
-      NewLog.encode(message.newLog, writer.uint32(34).fork()).ldelim();
-    }
-    if (message.deleteLog !== undefined) {
-      DeleteLog.encode(message.deleteLog, writer.uint32(42).fork()).ldelim();
-    }
-    if (message.formatSd !== undefined) {
-      FormatSd.encode(message.formatSd, writer.uint32(50).fork()).ldelim();
+    if (message.payload !== undefined) {
+      RequestPayload.encode(message.payload, writer.uint32(18).fork()).ldelim();
     }
     return writer;
   },
@@ -62,19 +47,7 @@ export const Request = {
           message.requestId = reader.uint32();
           break;
         case 2:
-          message.listLogs = ListLogs.decode(reader, reader.uint32());
-          break;
-        case 3:
-          message.getLog = GetLog.decode(reader, reader.uint32());
-          break;
-        case 4:
-          message.newLog = NewLog.decode(reader, reader.uint32());
-          break;
-        case 5:
-          message.deleteLog = DeleteLog.decode(reader, reader.uint32());
-          break;
-        case 6:
-          message.formatSd = FormatSd.decode(reader, reader.uint32());
+          message.payload = RequestPayload.decode(reader, reader.uint32());
           break;
         default:
           reader.skipType(tag & 7);
@@ -87,23 +60,15 @@ export const Request = {
   fromJSON(object: any): Request {
     return {
       requestId: isSet(object.requestId) ? Number(object.requestId) : 0,
-      listLogs: isSet(object.listLogs) ? ListLogs.fromJSON(object.listLogs) : undefined,
-      getLog: isSet(object.getLog) ? GetLog.fromJSON(object.getLog) : undefined,
-      newLog: isSet(object.newLog) ? NewLog.fromJSON(object.newLog) : undefined,
-      deleteLog: isSet(object.deleteLog) ? DeleteLog.fromJSON(object.deleteLog) : undefined,
-      formatSd: isSet(object.formatSd) ? FormatSd.fromJSON(object.formatSd) : undefined,
+      payload: isSet(object.payload) ? RequestPayload.fromJSON(object.payload) : undefined,
     };
   },
 
   toJSON(message: Request): unknown {
     const obj: any = {};
     message.requestId !== undefined && (obj.requestId = Math.round(message.requestId));
-    message.listLogs !== undefined && (obj.listLogs = message.listLogs ? ListLogs.toJSON(message.listLogs) : undefined);
-    message.getLog !== undefined && (obj.getLog = message.getLog ? GetLog.toJSON(message.getLog) : undefined);
-    message.newLog !== undefined && (obj.newLog = message.newLog ? NewLog.toJSON(message.newLog) : undefined);
-    message.deleteLog !== undefined &&
-      (obj.deleteLog = message.deleteLog ? DeleteLog.toJSON(message.deleteLog) : undefined);
-    message.formatSd !== undefined && (obj.formatSd = message.formatSd ? FormatSd.toJSON(message.formatSd) : undefined);
+    message.payload !== undefined &&
+      (obj.payload = message.payload ? RequestPayload.toJSON(message.payload) : undefined);
     return obj;
   },
 
@@ -114,6 +79,94 @@ export const Request = {
   fromPartial<I extends Exact<DeepPartial<Request>, I>>(object: I): Request {
     const message = createBaseRequest();
     message.requestId = object.requestId ?? 0;
+    message.payload = (object.payload !== undefined && object.payload !== null)
+      ? RequestPayload.fromPartial(object.payload)
+      : undefined;
+    return message;
+  },
+};
+
+function createBaseRequestPayload(): RequestPayload {
+  return { listLogs: undefined, getLog: undefined, newLog: undefined, deleteLog: undefined, formatSd: undefined };
+}
+
+export const RequestPayload = {
+  encode(message: RequestPayload, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.listLogs !== undefined) {
+      ListLogs.encode(message.listLogs, writer.uint32(10).fork()).ldelim();
+    }
+    if (message.getLog !== undefined) {
+      GetLog.encode(message.getLog, writer.uint32(18).fork()).ldelim();
+    }
+    if (message.newLog !== undefined) {
+      NewLog.encode(message.newLog, writer.uint32(26).fork()).ldelim();
+    }
+    if (message.deleteLog !== undefined) {
+      DeleteLog.encode(message.deleteLog, writer.uint32(34).fork()).ldelim();
+    }
+    if (message.formatSd !== undefined) {
+      FormatSd.encode(message.formatSd, writer.uint32(42).fork()).ldelim();
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): RequestPayload {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseRequestPayload();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.listLogs = ListLogs.decode(reader, reader.uint32());
+          break;
+        case 2:
+          message.getLog = GetLog.decode(reader, reader.uint32());
+          break;
+        case 3:
+          message.newLog = NewLog.decode(reader, reader.uint32());
+          break;
+        case 4:
+          message.deleteLog = DeleteLog.decode(reader, reader.uint32());
+          break;
+        case 5:
+          message.formatSd = FormatSd.decode(reader, reader.uint32());
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): RequestPayload {
+    return {
+      listLogs: isSet(object.listLogs) ? ListLogs.fromJSON(object.listLogs) : undefined,
+      getLog: isSet(object.getLog) ? GetLog.fromJSON(object.getLog) : undefined,
+      newLog: isSet(object.newLog) ? NewLog.fromJSON(object.newLog) : undefined,
+      deleteLog: isSet(object.deleteLog) ? DeleteLog.fromJSON(object.deleteLog) : undefined,
+      formatSd: isSet(object.formatSd) ? FormatSd.fromJSON(object.formatSd) : undefined,
+    };
+  },
+
+  toJSON(message: RequestPayload): unknown {
+    const obj: any = {};
+    message.listLogs !== undefined && (obj.listLogs = message.listLogs ? ListLogs.toJSON(message.listLogs) : undefined);
+    message.getLog !== undefined && (obj.getLog = message.getLog ? GetLog.toJSON(message.getLog) : undefined);
+    message.newLog !== undefined && (obj.newLog = message.newLog ? NewLog.toJSON(message.newLog) : undefined);
+    message.deleteLog !== undefined &&
+      (obj.deleteLog = message.deleteLog ? DeleteLog.toJSON(message.deleteLog) : undefined);
+    message.formatSd !== undefined && (obj.formatSd = message.formatSd ? FormatSd.toJSON(message.formatSd) : undefined);
+    return obj;
+  },
+
+  create<I extends Exact<DeepPartial<RequestPayload>, I>>(base?: I): RequestPayload {
+    return RequestPayload.fromPartial(base ?? {});
+  },
+
+  fromPartial<I extends Exact<DeepPartial<RequestPayload>, I>>(object: I): RequestPayload {
+    const message = createBaseRequestPayload();
     message.listLogs = (object.listLogs !== undefined && object.listLogs !== null)
       ? ListLogs.fromPartial(object.listLogs)
       : undefined;

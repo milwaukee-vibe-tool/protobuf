@@ -8,11 +8,15 @@ import "protos/requests/formatSd.proto";
 
 message Request {
   uint32 request_id = 1;
+  RequestPayload payload = 2;
+}
+
+message RequestPayload {
   oneof payload {
-    ListLogs list_logs = 2;
-    GetLog get_log = 3;
-    NewLog new_log = 4;
-    DeleteLog delete_log = 5;
-    FormatSd format_sd = 6;
+    ListLogs list_logs = 1;
+    GetLog get_log = 2;
+    NewLog new_log = 3;
+    DeleteLog delete_log = 4;
+    FormatSd format_sd = 5;
   };
 }

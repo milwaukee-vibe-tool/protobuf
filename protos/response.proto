@@ -8,11 +8,15 @@ import "protos/responses/systemInfo.proto";
 
 message Response {
   uint32 request_id = 1;
+  ResponsePayload payload = 2;
+}
+
+message ResponsePayload {
   oneof payload {
-    Success success = 2;
-    Error error = 3;
-    LogList log_list = 4;
-    LogInfo log_info = 5;
-    SystemInfo system_info = 6;
+    Success success = 1;
+    Error error = 2;
+    LogList log_list = 3;
+    LogInfo log_info = 4;
+    SystemInfo system_info = 5;
   }
 }
