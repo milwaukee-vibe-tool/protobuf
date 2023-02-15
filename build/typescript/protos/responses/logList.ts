@@ -4,6 +4,7 @@ import * as _m0 from "protobufjs/minimal";
 export const protobufPackage = "";
 
 export interface LogList {
+  prefix: number;
   offset: number;
   count: number;
   logs: LogListLogInfo[];
@@ -14,19 +15,22 @@ export interface LogListLogInfo {
 }
 
 function createBaseLogList(): LogList {
-  return { offset: 0, count: 0, logs: [] };
+  return { prefix: 0, offset: 0, count: 0, logs: [] };
 }
 
 export const LogList = {
   encode(message: LogList, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.prefix !== 0) {
+      writer.uint32(8).uint32(message.prefix);
+    }
     if (message.offset !== 0) {
-      writer.uint32(8).uint32(message.offset);
+      writer.uint32(16).uint32(message.offset);
     }
     if (message.count !== 0) {
-      writer.uint32(16).uint32(message.count);
+      writer.uint32(24).uint32(message.count);
     }
     for (const v of message.logs) {
-      LogListLogInfo.encode(v!, writer.uint32(26).fork()).ldelim();
+      LogListLogInfo.encode(v!, writer.uint32(34).fork()).ldelim();
     }
     return writer;
   },
@@ -39,12 +43,15 @@ export const LogList = {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          message.offset = reader.uint32();
+          message.prefix = reader.uint32();
           break;
         case 2:
-          message.count = reader.uint32();
+          message.offset = reader.uint32();
           break;
         case 3:
+          message.count = reader.uint32();
+          break;
+        case 4:
           message.logs.push(LogListLogInfo.decode(reader, reader.uint32()));
           break;
         default:
@@ -57,6 +64,7 @@ export const LogList = {
 
   fromJSON(object: any): LogList {
     return {
+      prefix: isSet(object.prefix) ? Number(object.prefix) : 0,
       offset: isSet(object.offset) ? Number(object.offset) : 0,
       count: isSet(object.count) ? Number(object.count) : 0,
       logs: Array.isArray(object?.logs) ? object.logs.map((e: any) => LogListLogInfo.fromJSON(e)) : [],
@@ -65,6 +73,7 @@ export const LogList = {
 
   toJSON(message: LogList): unknown {
     const obj: any = {};
+    message.prefix !== undefined && (obj.prefix = Math.round(message.prefix));
     message.offset !== undefined && (obj.offset = Math.round(message.offset));
     message.count !== undefined && (obj.count = Math.round(message.count));
     if (message.logs) {
@@ -81,6 +90,7 @@ export const LogList = {
 
   fromPartial<I extends Exact<DeepPartial<LogList>, I>>(object: I): LogList {
     const message = createBaseLogList();
+    message.prefix = object.prefix ?? 0;
     message.offset = object.offset ?? 0;
     message.count = object.count ?? 0;
     message.logs = object.logs?.map((e) => LogListLogInfo.fromPartial(e)) || [];
