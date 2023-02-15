@@ -1,6 +1,9 @@
 syntax = "proto3";
 
 message NewLog {
+  // if equals "", use just prefix
+  // else, use and apply prefix
   string log_id = 1;
-  string sample_rate = 2;
+  // if equals 0, use previous/default
+  uint32 sample_rate = 2;
 }

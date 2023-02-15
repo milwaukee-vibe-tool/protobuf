@@ -4,12 +4,17 @@ import * as _m0 from "protobufjs/minimal";
 export const protobufPackage = "";
 
 export interface NewLog {
+  /**
+   * if equals "", use just prefix
+   * else, use and apply prefix
+   */
   logId: string;
-  sampleRate: string;
+  /** if equals 0, use previous/default */
+  sampleRate: number;
 }
 
 function createBaseNewLog(): NewLog {
-  return { logId: "", sampleRate: "" };
+  return { logId: "", sampleRate: 0 };
 }
 
 export const NewLog = {
@@ -17,8 +22,8 @@ export const NewLog = {
     if (message.logId !== "") {
       writer.uint32(10).string(message.logId);
     }
-    if (message.sampleRate !== "") {
-      writer.uint32(18).string(message.sampleRate);
+    if (message.sampleRate !== 0) {
+      writer.uint32(16).uint32(message.sampleRate);
     }
     return writer;
   },
@@ -34,7 +39,7 @@ export const NewLog = {
           message.logId = reader.string();
           break;
         case 2:
-          message.sampleRate = reader.string();
+          message.sampleRate = reader.uint32();
           break;
         default:
           reader.skipType(tag & 7);
@@ -47,14 +52,14 @@ export const NewLog = {
   fromJSON(object: any): NewLog {
     return {
       logId: isSet(object.logId) ? String(object.logId) : "",
-      sampleRate: isSet(object.sampleRate) ? String(object.sampleRate) : "",
+      sampleRate: isSet(object.sampleRate) ? Number(object.sampleRate) : 0,
     };
   },
 
   toJSON(message: NewLog): unknown {
     const obj: any = {};
     message.logId !== undefined && (obj.logId = message.logId);
-    message.sampleRate !== undefined && (obj.sampleRate = message.sampleRate);
+    message.sampleRate !== undefined && (obj.sampleRate = Math.round(message.sampleRate));
     return obj;
   },
 
@@ -65,7 +70,7 @@ export const NewLog = {
   fromPartial<I extends Exact<DeepPartial<NewLog>, I>>(object: I): NewLog {
     const message = createBaseNewLog();
     message.logId = object.logId ?? "";
-    message.sampleRate = object.sampleRate ?? "";
+    message.sampleRate = object.sampleRate ?? 0;
     return message;
   },
 };
