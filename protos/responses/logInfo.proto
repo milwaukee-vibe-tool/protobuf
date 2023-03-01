@@ -5,10 +5,10 @@ message LogInfo {
   uint32 sample_rate = 2;
   uint32 offset = 3;
   uint32 count = 4;
-  repeated DataPoint points = 5;
+  uint32 total = 5;
+  repeated DataPoint points = 6;
 }
 
 message DataPoint {
-  uint32 stamp = 1;
-  uint32 value = 2;
+  uint32 value = 1;
 }

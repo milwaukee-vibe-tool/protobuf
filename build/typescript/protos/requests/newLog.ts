@@ -5,11 +5,11 @@ export const protobufPackage = "";
 
 export interface NewLog {
   /**
-   * if equals "", use just prefix
-   * else, use and apply prefix
+   * if "", use just prefix
+   * else, use and apply prefix as `prefix_${log_id}`
    */
   logId: string;
-  /** if equals 0, use previous/default */
+  /** if -1, use previous/default */
   sampleRate: number;
 }
 
@@ -23,7 +23,7 @@ export const NewLog = {
       writer.uint32(10).string(message.logId);
     }
     if (message.sampleRate !== 0) {
-      writer.uint32(16).uint32(message.sampleRate);
+      writer.uint32(16).int32(message.sampleRate);
     }
     return writer;
   },
@@ -39,7 +39,7 @@ export const NewLog = {
           message.logId = reader.string();
           break;
         case 2:
-          message.sampleRate = reader.uint32();
+          message.sampleRate = reader.int32();
           break;
         default:
           reader.skipType(tag & 7);

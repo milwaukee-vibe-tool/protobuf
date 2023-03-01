@@ -5,7 +5,9 @@ export const protobufPackage = "";
 
 export interface GetLog {
   logId: string;
+  /** if negative, count from the end */
   offset: number;
+  /** if -1, return all */
   count: number;
 }
 
@@ -19,10 +21,10 @@ export const GetLog = {
       writer.uint32(10).string(message.logId);
     }
     if (message.offset !== 0) {
-      writer.uint32(16).uint32(message.offset);
+      writer.uint32(16).int32(message.offset);
     }
     if (message.count !== 0) {
-      writer.uint32(24).uint32(message.count);
+      writer.uint32(24).int32(message.count);
     }
     return writer;
   },
@@ -38,10 +40,10 @@ export const GetLog = {
           message.logId = reader.string();
           break;
         case 2:
-          message.offset = reader.uint32();
+          message.offset = reader.int32();
           break;
         case 3:
-          message.count = reader.uint32();
+          message.count = reader.int32();
           break;
         default:
           reader.skipType(tag & 7);

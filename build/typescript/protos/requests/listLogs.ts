@@ -4,7 +4,9 @@ import * as _m0 from "protobufjs/minimal";
 export const protobufPackage = "";
 
 export interface ListLogs {
+  /** if negative, count from the end */
   offset: number;
+  /** if -1, return all */
   count: number;
 }
 

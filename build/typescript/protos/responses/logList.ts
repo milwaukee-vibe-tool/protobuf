@@ -5,8 +5,10 @@ export const protobufPackage = "";
 
 export interface LogList {
   prefix: number;
+  /** if a negative offset was provided in the request, return the absolute offset */
   offset: number;
   count: number;
+  total: number;
   logs: LogListLogInfo[];
 }
 
@@ -15,7 +17,7 @@ export interface LogListLogInfo {
 }
 
 function createBaseLogList(): LogList {
-  return { prefix: 0, offset: 0, count: 0, logs: [] };
+  return { prefix: 0, offset: 0, count: 0, total: 0, logs: [] };
 }
 
 export const LogList = {
@@ -29,8 +31,11 @@ export const LogList = {
     if (message.count !== 0) {
       writer.uint32(24).uint32(message.count);
     }
+    if (message.total !== 0) {
+      writer.uint32(32).uint32(message.total);
+    }
     for (const v of message.logs) {
-      LogListLogInfo.encode(v!, writer.uint32(34).fork()).ldelim();
+      LogListLogInfo.encode(v!, writer.uint32(42).fork()).ldelim();
     }
     return writer;
   },
@@ -52,6 +57,9 @@ export const LogList = {
           message.count = reader.uint32();
           break;
         case 4:
+          message.total = reader.uint32();
+          break;
+        case 5:
           message.logs.push(LogListLogInfo.decode(reader, reader.uint32()));
           break;
         default:
@@ -67,6 +75,7 @@ export const LogList = {
       prefix: isSet(object.prefix) ? Number(object.prefix) : 0,
       offset: isSet(object.offset) ? Number(object.offset) : 0,
       count: isSet(object.count) ? Number(object.count) : 0,
+      total: isSet(object.total) ? Number(object.total) : 0,
       logs: Array.isArray(object?.logs) ? object.logs.map((e: any) => LogListLogInfo.fromJSON(e)) : [],
     };
   },
@@ -76,6 +85,7 @@ export const LogList = {
     message.prefix !== undefined && (obj.prefix = Math.round(message.prefix));
     message.offset !== undefined && (obj.offset = Math.round(message.offset));
     message.count !== undefined && (obj.count = Math.round(message.count));
+    message.total !== undefined && (obj.total = Math.round(message.total));
     if (message.logs) {
       obj.logs = message.logs.map((e) => e ? LogListLogInfo.toJSON(e) : undefined);
     } else {
@@ -93,6 +103,7 @@ export const LogList = {
     message.prefix = object.prefix ?? 0;
     message.offset = object.offset ?? 0;
     message.count = object.count ?? 0;
+    message.total = object.total ?? 0;
     message.logs = object.logs?.map((e) => LogListLogInfo.fromPartial(e)) || [];
     return message;
   },

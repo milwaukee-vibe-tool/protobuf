@@ -8,16 +8,16 @@ export interface LogInfo {
   sampleRate: number;
   offset: number;
   count: number;
+  total: number;
   points: DataPoint[];
 }
 
 export interface DataPoint {
-  stamp: number;
   value: number;
 }
 
 function createBaseLogInfo(): LogInfo {
-  return { logId: "", sampleRate: 0, offset: 0, count: 0, points: [] };
+  return { logId: "", sampleRate: 0, offset: 0, count: 0, total: 0, points: [] };
 }
 
 export const LogInfo = {
@@ -34,8 +34,11 @@ export const LogInfo = {
     if (message.count !== 0) {
       writer.uint32(32).uint32(message.count);
     }
+    if (message.total !== 0) {
+      writer.uint32(40).uint32(message.total);
+    }
     for (const v of message.points) {
-      DataPoint.encode(v!, writer.uint32(42).fork()).ldelim();
+      DataPoint.encode(v!, writer.uint32(50).fork()).ldelim();
     }
     return writer;
   },
@@ -60,6 +63,9 @@ export const LogInfo = {
           message.count = reader.uint32();
           break;
         case 5:
+          message.total = reader.uint32();
+          break;
+        case 6:
           message.points.push(DataPoint.decode(reader, reader.uint32()));
           break;
         default:
@@ -76,6 +82,7 @@ export const LogInfo = {
       sampleRate: isSet(object.sampleRate) ? Number(object.sampleRate) : 0,
       offset: isSet(object.offset) ? Number(object.offset) : 0,
       count: isSet(object.count) ? Number(object.count) : 0,
+      total: isSet(object.total) ? Number(object.total) : 0,
       points: Array.isArray(object?.points) ? object.points.map((e: any) => DataPoint.fromJSON(e)) : [],
     };
   },
@@ -86,6 +93,7 @@ export const LogInfo = {
     message.sampleRate !== undefined && (obj.sampleRate = Math.round(message.sampleRate));
     message.offset !== undefined && (obj.offset = Math.round(message.offset));
     message.count !== undefined && (obj.count = Math.round(message.count));
+    message.total !== undefined && (obj.total = Math.round(message.total));
     if (message.points) {
       obj.points = message.points.map((e) => e ? DataPoint.toJSON(e) : undefined);
     } else {
@@ -104,22 +112,20 @@ export const LogInfo = {
     message.sampleRate = object.sampleRate ?? 0;
     message.offset = object.offset ?? 0;
     message.count = object.count ?? 0;
+    message.total = object.total ?? 0;
     message.points = object.points?.map((e) => DataPoint.fromPartial(e)) || [];
     return message;
   },
 };
 
 function createBaseDataPoint(): DataPoint {
-  return { stamp: 0, value: 0 };
+  return { value: 0 };
 }
 
 export const DataPoint = {
   encode(message: DataPoint, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
-    if (message.stamp !== 0) {
-      writer.uint32(8).uint32(message.stamp);
-    }
     if (message.value !== 0) {
-      writer.uint32(16).uint32(message.value);
+      writer.uint32(8).uint32(message.value);
     }
     return writer;
   },
@@ -132,9 +138,6 @@ export const DataPoint = {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          message.stamp = reader.uint32();
-          break;
-        case 2:
           message.value = reader.uint32();
           break;
         default:
@@ -146,15 +149,11 @@ export const DataPoint = {
   },
 
   fromJSON(object: any): DataPoint {
-    return {
-      stamp: isSet(object.stamp) ? Number(object.stamp) : 0,
-      value: isSet(object.value) ? Number(object.value) : 0,
-    };
+    return { value: isSet(object.value) ? Number(object.value) : 0 };
   },
 
   toJSON(message: DataPoint): unknown {
     const obj: any = {};
-    message.stamp !== undefined && (obj.stamp = Math.round(message.stamp));
     message.value !== undefined && (obj.value = Math.round(message.value));
     return obj;
   },
@@ -165,7 +164,6 @@ export const DataPoint = {
 
   fromPartial<I extends Exact<DeepPartial<DataPoint>, I>>(object: I): DataPoint {
     const message = createBaseDataPoint();
-    message.stamp = object.stamp ?? 0;
     message.value = object.value ?? 0;
     return message;
   },
